@@ -9,3 +9,6 @@ This is my WIP discord bot that automatically mutes and unmutes everyone in a vo
 - [ ] Process Selector
 - [ ] Keep dead players muted
 - [ ] Start/Stop automatically
+- [ ] Unmute when application closes
+- [ ] Unmute when leaving voice channel
+- [ ] Mute when joining voice channel
