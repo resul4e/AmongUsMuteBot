@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using Discord;
 using Memory;
 
-namespace WpfApp1
+namespace AmongUsBot
 {
 	public partial class MainWindow : Window
 	{

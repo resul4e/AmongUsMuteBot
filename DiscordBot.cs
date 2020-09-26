@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 
-namespace WpfApp1
+namespace AmongUsBot
 {
 	class DiscordBot
 	{
