@@ -1,0 +1,9 @@
+../.vs/
+[Bb]in/
+[Oo]bj/
+packages/*
+
+*.suo
+*.user
+*.sln.docstates
+
