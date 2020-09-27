@@ -41,7 +41,10 @@ namespace AmongUsBot
 
 					foreach (var voice in guild.VoiceChannels)
 					{
-						if (voice.Users.FirstOrDefault((x) => { return string.Compare(x.AvatarId, arg.Author.AvatarId, StringComparison.InvariantCultureIgnoreCase) == 0; }) != null)
+						var authorVoiceChannel = voice.Users.FirstOrDefault((x) =>
+							string.Compare(x.AvatarId, arg.Author.AvatarId,
+								StringComparison.InvariantCultureIgnoreCase) == 0);
+						if (authorVoiceChannel != null)
 						{
 							m_listenTo = voice;
 							arg.Channel.SendMessageAsync("Muting everyone in " + m_listenTo.Name);
@@ -64,6 +67,24 @@ namespace AmongUsBot
 			{
 				var guildUser = m_listenTo.Users.FirstOrDefault(x => x.Id == arg.Author.Id);
 				Unmute(guildUser);
+			}
+			else if (arg.Content.StartsWith("!UnmuteAll"))
+			{
+				foreach (var guild in m_client.Guilds)
+				{
+					var author = guild.Users.FirstOrDefault(x => x.Id == arg.Author.Id);
+					SocketRole roleWithMuteCapability = author?.Roles.FirstOrDefault(x => x.Guild == guild && x.Permissions.MuteMembers);
+
+					if (author == null || roleWithMuteCapability == null)
+					{
+						continue;
+					}
+
+					foreach (var user in guild.Users)
+					{
+						Unmute(user);
+					}
+				}
 			}
 			else if(arg.Content.StartsWith("!"))
 			{
