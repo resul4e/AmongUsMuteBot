@@ -16,10 +16,13 @@ namespace AmongUsBot
 
 		public override void Start(string _token)
 		{
+			if (m_client != null)
+			{
+				m_client.MessageReceived -= ClientOnMessageReceived;
+			}
+
 			base.Start(_token);
 			m_client.MessageReceived += ClientOnMessageReceived;
-
-			MuteInChannel(m_listenTo);
 		}
 
 		public void MuteAll()
@@ -67,6 +70,11 @@ namespace AmongUsBot
 			{
 				var guildUser = m_listenTo.Users.FirstOrDefault(x => x.Id == arg.Author.Id);
 				Unmute(guildUser);
+			}
+			else if (arg.Content.StartsWith("!EndTalk"))
+			{
+				var guildUser = m_listenTo.Users.FirstOrDefault(x => x.Id == arg.Author.Id);
+				Mute(guildUser);
 			}
 			else if (arg.Content.StartsWith("!UnmuteAll"))
 			{

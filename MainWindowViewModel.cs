@@ -28,11 +28,11 @@ namespace AmongUsBot
 
 					if (m_isInMeeting)
 					{
-						m_bot.MuteAll();
+						m_bot.UnmuteAll();
 					}
 					else
 					{
-						m_bot.UnmuteAll();
+						m_bot.MuteAll();
 					}
 				}
 			}
@@ -85,6 +85,12 @@ namespace AmongUsBot
 			m_processFinder.FindAllRunningProcesses();
 
 			App.Current.MainWindow.Closing += OnMainWindowClosing;
+
+			string token = ((App)Application.Current).Token;
+			if (token != null)
+			{
+				StartBot(token);
+			}
 		}
 
 		private void OnMainWindowClosing(object sender, CancelEventArgs e)

@@ -15,7 +15,7 @@
 						<DataTemplate>
 							<StackPanel Orientation="Horizontal">
 								<Image></Image>
-								<TextBlock Text="{Binding StringFormat='Among Us.exe({0})'}"></TextBlock>
+								<TextBlock Text="{Binding StringFormat='Among Us.exe({0})'}"/>
 							</StackPanel>
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
