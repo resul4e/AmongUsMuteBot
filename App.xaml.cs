@@ -13,8 +13,11 @@ namespace AmongUsBot
 	/// </summary>
 	public partial class App : Application
 	{
+		public ProcessFinder ProcessFinder;
+
 		App()
 		{
+			ProcessFinder = new ProcessFinder();
 		}
 	}
 }

@@ -30,6 +30,7 @@ namespace AmongUsBot
 		public MainWindow()
 		{
 			InitializeComponent();
+			DataContext = new MainWindowViewModel();
 
 			var isOpen = MemLib.OpenProcess("Among Us.exe");
 
@@ -41,6 +42,7 @@ namespace AmongUsBot
 
 
 				Thread = new Thread(new ThreadStart(ThreadProc));
+				Thread.IsBackground = true;
 				Thread.Start();
 
 				bot = new DiscordBot();
@@ -53,31 +55,29 @@ namespace AmongUsBot
 
 		private void ThreadProc()
 		{
-
-			var inEmergencyMeeting = MemLib.ReadByte("UnityPlayer.dll+012A7A14,0x64,0x34,0x8,0xC,0x3C,0x18");
-			if (inEmergencyMeeting == 1 && !inMeeting)
+			while (true)
 			{
-				inMeeting = true;
-				bot.UnMute();
-			}
-			else if(inEmergencyMeeting != 1 && inMeeting)
-			{
-				inMeeting = false;
-				bot.Mute();
-			}
-			Thread.Sleep(100);
+				var inEmergencyMeeting = MemLib.ReadByte("UnityPlayer.dll+012A7A14,0x64,0x34,0x8,0xC,0x3C,0x18");
+				if (inEmergencyMeeting == 1 && !inMeeting)
+				{
+					inMeeting = true;
+					bot.UnMute();
+				}
+				else if (inEmergencyMeeting != 1 && inMeeting)
+				{
+					inMeeting = false;
+					bot.Mute();
+				}
+				Thread.Sleep(100);
 
-			Debug.WriteLine(inMeeting);
+				Debug.WriteLine(inMeeting);
 
-			if (MemLib.theProc.HasExited)
-			{
-				bot.UnMute();
-				return;
+				if (MemLib.theProc.HasExited)
+				{
+					bot.UnMute();
+					return;
+				}
 			}
-
-			Thread = new Thread(new ThreadStart(ThreadProc));
-			Thread.IsBackground = true;
-			Thread.Start();
 		}
 
 		private void OnApplyTokenButtonClicked(object sender, RoutedEventArgs e)
