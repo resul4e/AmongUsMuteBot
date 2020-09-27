@@ -29,6 +29,11 @@ namespace AmongUsBot
 			return new Vector(posX, posY);
 		}
 
+		public bool GetPlayer1IsDead()
+		{
+			return m_mem.ReadByte("UnityPlayer.dll+012CC838,0xC0,0x0,0x14,0x18,0x34,0x29") == 1;
+		}
+
 		private readonly Mem m_mem;
 	}
 }

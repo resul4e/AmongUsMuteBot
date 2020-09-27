@@ -43,6 +43,20 @@ namespace AmongUsBot
 		}
 		private Vector m_player1Pos;
 
+		public bool Player1IsDead
+		{
+			get => m_player1IsDead;
+			set
+			{
+				if (m_player1IsDead != value)
+				{
+					m_player1IsDead = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+		private bool m_player1IsDead = false;
+
 		public MainWindowViewModel()
 		{
 			m_processFinder = ((App) App.Current).ProcessFinder;
@@ -88,6 +102,7 @@ namespace AmongUsBot
 			{
 				IsInMeeting = m_scraper.GetIsInMeeting();
 				Player1Pos = m_scraper.GetPlayer1Position();
+				Player1IsDead = m_scraper.GetPlayer1IsDead();
 			}
 		}
 

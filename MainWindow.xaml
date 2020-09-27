@@ -24,6 +24,7 @@
 				<Button x:Name="ApplyTokenButton" Padding="10,4,10,4" Margin="10,4,4,4" Click="OnApplyTokenButtonClicked">Apply</Button>
 			</StackPanel>
 			<TextBlock Text="{Binding Player1Pos.X}"/>
+			<TextBlock Text="{Binding Player1IsDead}"/>
 		</StackPanel>
     </Grid>
 </Window>
