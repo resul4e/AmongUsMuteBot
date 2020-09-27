@@ -22,11 +22,6 @@ namespace AmongUsBot
 {
 	public partial class MainWindow : Window
 	{
-		public bool inMeeting = false;
-		public Thread Thread = null;
-
-		public Mem MemLib = new Mem();
-
 		public MainWindowViewModel ViewModel => (MainWindowViewModel) DataContext;
 
 		public MainWindow()
