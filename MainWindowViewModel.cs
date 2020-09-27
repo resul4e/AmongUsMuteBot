@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using AmongUsBot.Properties;
 
 namespace AmongUsBot
@@ -24,6 +25,15 @@ namespace AmongUsBot
 				{
 					m_isInMeeting = value;
 					OnPropertyChanged();
+
+					if (m_isInMeeting)
+					{
+						m_bot.MuteAll();
+					}
+					else
+					{
+						m_bot.UnmuteAll();
+					}
 				}
 			}
 		}
@@ -57,18 +67,35 @@ namespace AmongUsBot
 		}
 		private bool m_player1IsDead = false;
 
+		public string BotStatusText
+		{
+			get { return "WIP"; }
+		}
+
+		public Brush StatusColour
+		{
+			get => Brushes.Red;
+		}
+
 		public MainWindowViewModel()
 		{
+			m_bot = new AmongUsDiscordBot(m_scraper);
 			m_processFinder = ((App) App.Current).ProcessFinder;
 			m_processFinder.PropertyChanged += OnProcessFinderPropertyChanged;
 			m_processFinder.FindAllRunningProcesses();
+
+			App.Current.MainWindow.Closing += OnMainWindowClosing;
 		}
 
-		public void Dispose()
+		private void OnMainWindowClosing(object sender, CancelEventArgs e)
 		{
-			m_disposing = true;
-			m_pollingThread.Join();
+			m_bot.UnmuteAll();
+		}
 
+
+		public void StartBot(string _token)
+		{
+			m_bot.Start(_token);
 		}
 
 		public void StartScrapingAmongUs(string _pid)
@@ -78,6 +105,14 @@ namespace AmongUsBot
 			m_pollingThread = new Thread(PollData);
 			m_pollingThread.IsBackground = true;
 			m_pollingThread.Start();
+		}
+
+
+		public void Dispose()
+		{
+			m_disposing = true;
+			m_pollingThread.Join();
+
 		}
 
 		private void OnProcessFinderPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -103,15 +138,17 @@ namespace AmongUsBot
 				IsInMeeting = m_scraper.GetIsInMeeting();
 				Player1Pos = m_scraper.GetPlayer1Position();
 				Player1IsDead = m_scraper.GetPlayer1IsDead();
+
+				Thread.Sleep((int)((1.0f / m_pollingRate) * 1000));
 			}
 		}
 
 		private bool m_disposing = false;
-		private int m_pollingRate = 30;
+		private float m_pollingRate = 30;
 		private Thread m_pollingThread;
-		private ProcessFinder m_processFinder;
+		private readonly ProcessFinder m_processFinder;
 		private AmongUsScraper m_scraper;
-
+		private readonly AmongUsDiscordBot m_bot;
 
 	}
 }

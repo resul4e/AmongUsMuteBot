@@ -19,11 +19,7 @@ namespace AmongUsBot
 			return Task.CompletedTask;
 		}
 
-		private DiscordSocketClient m_client;
-		private SocketVoiceChannel m_listenTo = null;
-		private ISocketMessageChannel m_textChannel = null;
-
-		public async void Start(string _token)
+		public virtual async void Start(string _token)
 		{
 			m_client = new DiscordSocketClient();
 
@@ -41,72 +37,46 @@ namespace AmongUsBot
 			await m_client.LoginAsync(TokenType.Bot, token);
 			await m_client.StartAsync();
 
-			m_client.MessageReceived += ClientOnMessageReceived;
-
 			// Block this task until the program is closed.
 			await Task.Delay(-1);
 		}
 
-		public void Mute()
+		public void MuteInChannel(SocketVoiceChannel _channel)
 		{
-			if (m_listenTo == null)
+			if (_channel == null)
 			{
 				return;
 			}
 
-			foreach (var user in m_listenTo.Users)
+			foreach (var user in _channel.Users)
 			{
-				user.ModifyAsync((a) => { a.Mute = true; });
+				Mute(user);
 			}
-
-			m_textChannel.SendMessageAsync("Muting");
 		}
 
-		public void UnMute()
+		public void UnmuteInChannel(SocketVoiceChannel _channel)
 		{
-			if (m_listenTo == null)
+			if (_channel == null)
 			{
 				return;
 			}
 
-			foreach (var user in m_listenTo.Users)
+			foreach (var user in _channel.Users)
 			{
-				user.ModifyAsync((a) => { a.Mute = false; });
+				Unmute(user);
 			}
-
-			m_textChannel.SendMessageAsync("UnMuting");
 		}
 
-		private Task ClientOnMessageReceived(SocketMessage arg)
+		public void Mute(SocketGuildUser _user)
 		{
-			if (arg.Content.StartsWith("!StartGame"))
-			{
-				foreach (SocketGuild guild in m_client.Guilds)
-				{
-
-					foreach (var voice in guild.VoiceChannels)
-					{
-						if (voice.Users.FirstOrDefault((x) => { return string.Compare(x.AvatarId, arg.Author.AvatarId, StringComparison.InvariantCultureIgnoreCase) == 0; }) != null)
-						{
-							m_listenTo = voice;
-							arg.Channel.SendMessageAsync("Muting everyone in " + m_listenTo.Name);
-							m_textChannel = arg.Channel;
-							Mute();
-							break;
-						}
-					}
-				}
-			}
-
-			if (arg.Content.StartsWith("!EndGame"))
-			{
-				arg.Channel.SendMessageAsync("Unmuting everyone in " + m_listenTo.Name);
-				UnMute();
-				m_listenTo = null;
-				m_textChannel = null;
-
-			}
-			return Task.CompletedTask;
+			_user.ModifyAsync((a) => { a.Mute = true; });
 		}
+
+		public void Unmute(SocketGuildUser _user)
+		{
+			_user.ModifyAsync((a) => { a.Mute = false; });
+		}
+
+		protected DiscordSocketClient m_client;
 	}
 }

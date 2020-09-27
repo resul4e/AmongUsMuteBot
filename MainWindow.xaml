@@ -8,23 +8,28 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
 		<StackPanel>
-			<ComboBox x:Name="TargetSelectionBox" ItemsSource="{Binding ProcessIDs}" SelectionChanged="OnTargetSelectionChanged" Width="Auto" Margin="4,4,4,4">
-				<ComboBox.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Orientation="Horizontal">
-							<Image></Image>
-							<TextBlock Text="{Binding StringFormat='Among Us.exe({0})'}"></TextBlock>
-						</StackPanel>
-					</DataTemplate>
-				</ComboBox.ItemTemplate>
-			</ComboBox>
 			<StackPanel Orientation="Horizontal">
-					<TextBlock Margin="4,4,10,4" Width="Auto" >Token:</TextBlock>
+				<TextBlock Text="Please select Among Us Process: " Margin="4,4,10,4" Width="Auto"/>
+				<ComboBox x:Name="TargetSelectionBox" ItemsSource="{Binding ProcessIDs}" SelectionChanged="OnTargetSelectionChanged" Width="150" Margin="0,4,4,4">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal">
+								<Image></Image>
+								<TextBlock Text="{Binding StringFormat='Among Us.exe({0})'}"></TextBlock>
+							</StackPanel>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+			</StackPanel>
+			<StackPanel Orientation="Horizontal">
+					<TextBlock Margin="4,4,10,4" Width="Auto" >Discord bot token:</TextBlock>
 				<PasswordBox Margin="0,4,0,4" x:Name="TokenBox" Height="24" Width="500" VerticalContentAlignment="Center"/>
 				<Button x:Name="ApplyTokenButton" Padding="10,4,10,4" Margin="10,4,4,4" Click="OnApplyTokenButtonClicked">Apply</Button>
 			</StackPanel>
-			<TextBlock Text="{Binding Player1Pos.X}"/>
-			<TextBlock Text="{Binding Player1IsDead}"/>
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Margin="4,4,10,4">Discord bot status: </TextBlock>
+				<TextBlock Margin="0,4,4,4" Text="{Binding BotStatusText}" Foreground="{Binding StatusColour}"/>
+			</StackPanel>
 		</StackPanel>
     </Grid>
 </Window>
