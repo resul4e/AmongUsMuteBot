@@ -8,8 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Management;
 using System.Runtime.CompilerServices;
+using AmongUsBot.Properties;
 using Memory;
-using WpfApp1.Annotations;
 
 namespace AmongUsBot
 {

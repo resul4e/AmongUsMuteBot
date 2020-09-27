@@ -25,7 +25,8 @@ namespace AmongUsBot
 		public Thread Thread = null;
 
 		public Mem MemLib = new Mem();
-		private DiscordBot bot;
+
+		public MainWindowViewModel ViewModel => (MainWindowViewModel) DataContext;
 
 		public MainWindow()
 		{
@@ -36,16 +37,11 @@ namespace AmongUsBot
 
 			if (isOpen)
 			{
-				var posX = MemLib.ReadFloat("UnityPlayer.dll+01277F00,0x20,0x2C,0x58,0x0,0x4,0x5C,0x2C");
-
-				Debug.WriteLine(posX);
-
-
 				Thread = new Thread(new ThreadStart(ThreadProc));
 				Thread.IsBackground = true;
 				Thread.Start();
 
-				bot = new DiscordBot();
+				m_bot = new DiscordBot();
 			}
 			else
 			{
@@ -61,12 +57,12 @@ namespace AmongUsBot
 				if (inEmergencyMeeting == 1 && !inMeeting)
 				{
 					inMeeting = true;
-					bot.UnMute();
+					m_bot.UnMute();
 				}
 				else if (inEmergencyMeeting != 1 && inMeeting)
 				{
 					inMeeting = false;
-					bot.Mute();
+					m_bot.Mute();
 				}
 				Thread.Sleep(100);
 
@@ -74,7 +70,7 @@ namespace AmongUsBot
 
 				if (MemLib.theProc.HasExited)
 				{
-					bot.UnMute();
+					m_bot.UnMute();
 					return;
 				}
 			}
@@ -82,8 +78,17 @@ namespace AmongUsBot
 
 		private void OnApplyTokenButtonClicked(object sender, RoutedEventArgs e)
 		{
-			bot.Start(TokenBox.Text);
+			m_bot.Start(TokenBox.Password);
 		}
+
+		private void OnTargetSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			string selectedPID = (string)e.AddedItems[0];
+			ViewModel.StartScrapingAmongUs(selectedPID);
+		}
+
+		
+		private DiscordBot m_bot;
 	}
 
 

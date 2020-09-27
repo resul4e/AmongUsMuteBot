@@ -8,22 +8,22 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
 		<StackPanel>
+			<ComboBox x:Name="TargetSelectionBox" ItemsSource="{Binding ProcessIDs}" SelectionChanged="OnTargetSelectionChanged" Width="Auto" Margin="4,4,4,4">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal">
+							<Image></Image>
+							<TextBlock Text="{Binding StringFormat='Among Us.exe({0})'}"></TextBlock>
+						</StackPanel>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
 			<StackPanel Orientation="Horizontal">
-				<ComboBox ItemsSource="{Binding ProcessIDs}">
-					<ComboBox.ItemTemplate>
-						<DataTemplate>
-							<StackPanel Orientation="Horizontal">
-								<Image></Image>
-								<TextBlock Text="{Binding StringFormat='Among Us.exe({0})'}"></TextBlock>
-							</StackPanel>
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
-				<TextBlock Margin="4,4,10,4" Width="Auto">Token:</TextBlock>
-				<TextBox Margin="0,4,0,4" x:Name="TokenBox" Height="24" Width="500" VerticalContentAlignment="Center"></TextBox>
+					<TextBlock Margin="4,4,10,4" Width="Auto" >Token:</TextBlock>
+				<PasswordBox Margin="0,4,0,4" x:Name="TokenBox" Height="24" Width="500" VerticalContentAlignment="Center"/>
 				<Button x:Name="ApplyTokenButton" Padding="10,4,10,4" Margin="10,4,4,4" Click="OnApplyTokenButtonClicked">Apply</Button>
 			</StackPanel>
-
+			<TextBlock Text="{Binding Player1Pos.X}"/>
 		</StackPanel>
     </Grid>
 </Window>
