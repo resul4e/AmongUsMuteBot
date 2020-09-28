@@ -4,7 +4,7 @@ This is my WIP discord bot that automatically mutes and unmutes everyone in a vo
 
 ## Roadmap
 
-- [ ] Cleaning current codebase
+- [X] Cleaning current codebase
 - [ ] Step by step guide
 - [ ] Process Selector
 - [ ] Keep dead players muted
