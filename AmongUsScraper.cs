@@ -34,6 +34,16 @@ namespace AmongUsBot
 			return m_mem.ReadByte("UnityPlayer.dll+012CC838,0xC0,0x0,0x14,0x18,0x34,0x29") == 1;
 		}
 
+		public float GetLobbyTimer()
+		{
+			return m_mem.ReadFloat("UnityPlayer.dll+012A7A48,0xD8,0x40,0x148,0x84,0x0,0x18,0x40");
+		}
+
+		public Byte[] GetWinnerPointer()
+		{
+			return m_mem.ReadBytes("GameAssembly.dll+00DA5A28,0x3C,0x40,0x8,0x64,0x24,0x5C,0xC", 4);
+		}
+
 		private readonly Mem m_mem;
 	}
 }

@@ -41,7 +41,6 @@ namespace AmongUsBot
 			{
 				foreach (SocketGuild guild in m_client.Guilds)
 				{
-
 					foreach (var voice in guild.VoiceChannels)
 					{
 						var authorVoiceChannel = voice.Users.FirstOrDefault((x) =>
@@ -91,6 +90,25 @@ namespace AmongUsBot
 					foreach (var user in guild.Users)
 					{
 						Unmute(user);
+					}
+				}
+			}
+			else if(arg.Content.StartsWith("!Listen"))
+			{
+				foreach (SocketGuild guild in m_client.Guilds)
+				{
+					foreach (var voice in guild.VoiceChannels)
+					{
+						var authorVoiceChannel = voice.Users.FirstOrDefault((x) =>
+							string.Compare(x.AvatarId, arg.Author.AvatarId,
+								StringComparison.InvariantCultureIgnoreCase) == 0);
+						if (authorVoiceChannel != null)
+						{
+							m_listenTo = voice;
+							arg.Channel.SendMessageAsync("When the game starts I will mute everyone in " + m_listenTo.Name);
+							m_textChannel = arg.Channel;
+							break;
+						}
 					}
 				}
 			}

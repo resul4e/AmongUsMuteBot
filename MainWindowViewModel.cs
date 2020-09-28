@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -28,11 +29,25 @@ namespace AmongUsBot
 
 					if (m_isInMeeting)
 					{
+						m_isInMeetingTask = new Task(() =>
+						{
+							Thread.Sleep(1000);
+							if (IsInMeeting)
+							{
+								m_wasInMeeting = true;
+							}
+						});
+						m_isInMeetingTask.Start();
 						m_bot.UnmuteAll();
 					}
 					else
 					{
-						m_bot.MuteAll();
+						if (m_wasInMeeting && !GameEnded)
+						{
+							m_bot.MuteAll();
+							m_wasInMeeting = false;
+						}
+
 					}
 				}
 			}
@@ -66,6 +81,52 @@ namespace AmongUsBot
 			}
 		}
 		private bool m_player1IsDead = false;
+
+		public float LobbyTimer
+		{
+			get => m_lobbyTimer;
+			set
+			{
+				if (Math.Abs(m_lobbyTimer - value) > 0.00001f)
+				{
+					m_lobbyTimer = value;
+					OnPropertyChanged();
+
+					if (m_lobbyTimer > 4 && m_lobbyTimer < 6)
+					{
+						m_countingDown = true;
+					}
+
+					if (m_lobbyTimer < 0.3 && m_countingDown)
+					{
+						m_countingDown = false;
+						m_bot.MuteAll();
+					}
+				}
+			}
+		}
+
+		public bool GameEnded
+		{
+			get => m_gameEnded;
+			set
+			{
+				if (m_gameEnded != value)
+				{
+					m_gameEnded = value;
+
+					if (m_gameEnded)
+					{
+						m_bot.UnmuteAll();
+						m_gameEnded = false;
+					}
+				}
+			}
+		}
+
+		private bool m_gameEnded = false;
+
+		private float m_lobbyTimer = 0;
 
 		public string BotStatusText
 		{
@@ -144,8 +205,30 @@ namespace AmongUsBot
 				IsInMeeting = m_scraper.GetIsInMeeting();
 				Player1Pos = m_scraper.GetPlayer1Position();
 				Player1IsDead = m_scraper.GetPlayer1IsDead();
+				LobbyTimer = m_scraper.GetLobbyTimer();
+
+				CheckIfGameEnded();
 
 				Thread.Sleep((int)((1.0f / m_pollingRate) * 1000));
+			}
+		}
+
+		private void CheckIfGameEnded()
+		{
+			var winnerPointer = m_scraper.GetWinnerPointer();
+			if (m_winnerPointer[0] == 0 && m_winnerPointer[1] == 0 && m_winnerPointer[2] == 0 &&
+			    m_winnerPointer[3] == 0)
+			{
+				m_winnerPointer = winnerPointer;
+			}
+			for (int i = 0; i < 4; i++)
+			{
+				if (m_winnerPointer[i] != winnerPointer[i])
+				{
+					m_winnerPointer = winnerPointer;
+					GameEnded = true;
+					break;
+				}
 			}
 		}
 
@@ -155,6 +238,11 @@ namespace AmongUsBot
 		private readonly ProcessFinder m_processFinder;
 		private AmongUsScraper m_scraper;
 		private readonly AmongUsDiscordBot m_bot;
-
+		private bool m_countingDown = false;
+		private Byte[] m_winnerPointer = new Byte[4]{0,0,0,0};
+		private bool m_wasInMeeting = false;
+		
+		//TODO: Find out when the player is actually in a meeting to remove this Task.
+		private Task m_isInMeetingTask;
 	}
 }
