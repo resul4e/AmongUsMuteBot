@@ -99,6 +99,7 @@ namespace AmongUsBot
 
 					if (m_lobbyTimer < 0.3 && m_countingDown)
 					{
+						GameEnded = false;
 						m_countingDown = false;
 						m_bot.MuteAll();
 					}
@@ -118,7 +119,6 @@ namespace AmongUsBot
 					if (m_gameEnded)
 					{
 						m_bot.UnmuteAll();
-						m_gameEnded = false;
 					}
 				}
 			}
@@ -215,12 +215,23 @@ namespace AmongUsBot
 
 		private void CheckIfGameEnded()
 		{
+			if (m_winnerPointer == null)
+			{
+				return;
+			}
+
 			var winnerPointer = m_scraper.GetWinnerPointer();
 			if (m_winnerPointer[0] == 0 && m_winnerPointer[1] == 0 && m_winnerPointer[2] == 0 &&
 			    m_winnerPointer[3] == 0)
 			{
 				m_winnerPointer = winnerPointer;
 			}
+
+			if (winnerPointer == null)
+			{
+				return;
+			}
+
 			for (int i = 0; i < 4; i++)
 			{
 				if (m_winnerPointer[i] != winnerPointer[i])
